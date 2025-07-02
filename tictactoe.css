@@ -1,0 +1,14 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #222; /* Dark background for the game */
+}
+
+#tictactoeCanvas {
+    background-color: #ffffff; /* Black background for the canvas */
+    border: 10px solid #000000; /* White border around the canvas */
+}
