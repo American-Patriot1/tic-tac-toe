@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tictactoe</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+
+<body>
+    <div class="container">
+        <div class="button-container">
+            <button id="tictactoeButton">tictactoe</button>
+        </div>
+    </div>
+
+    <script>
+        // Get references to the buttons using their IDs
+        const tictactoeButton = document.getElementById('tictactoeButton');
+        tictactoeButton.addEventListener('click', () => {
+            window.location.href = 'tictactoe.html';
+        });
+    </script>
+</body>
+</html>

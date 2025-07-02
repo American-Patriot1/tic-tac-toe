@@ -18,6 +18,9 @@ function drawBoard() {
     }
     ctx.fillStyle = "black";
     ctx.fillRect(100,0,10,320);
+    ctx.fillRect(210,0,10,320);
+    ctx.fillRect(0,100,320,10);
+    ctx.fillRect(0,210,320,10);
 }
 
 
