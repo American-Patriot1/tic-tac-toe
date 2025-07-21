@@ -7,7 +7,8 @@ const canvasHeight = canvas.height;
 const squareSize = 20;
 const numRows = canvasHeight / squareSize;
 const numCols = canvasWidth / squareSize;
-
+// console.log();
+// console.log("-------------------------------");
 class Game{
     constructor(){
         this.board=[["","",""],["","",""],["","",""]];
@@ -18,96 +19,58 @@ class Game{
         this.xWins=0;
         this.oWins=0;
         this.ties=0;
-        this.converter=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
+        // const locs=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
+        const locs=[1,2,3,4,5,6,7,8,9]
         this.outcomes=[];
         this.path=[];
-        this.numbers=[1,2,3,4,5,6,7,8,9];
-        // console.log(this.numbers);
-        this.plays=[[1],[2],[3],[4],[5],[6],[7],[8],[9]];
-        for(let one=0;one<=this.plays.length-1;one++){
-            let numsOne=this.createList(this.numbers,this.plays[one][0]);
-            this.plays=this.addToList(this.plays,numsOne,1,[one]);
-            for(let two=1;two<=this.plays[one].length-1;two++){
-                let numsTwo=this.createList(numsOne,this.plays[one,two][0]);
-                this.plays=this.addToList(this.plays,numsTwo,2,[one,two]);
-                for(let three=1;three<=this.plays[one,two].length-1;three++){
-                    let numsThree=this.createList(numsTwo,this.plays[one,two,three][0]);
-                    console.log(numsThree);
-                    this.plays=this.addToList(this.plays,numsThree,3,[one,two,three]);
-                    for(let four=1;four<=this.plays[one,two,three].length-1;four++){
-                        let numsFour=this.createList(numsThree,this.plays[one,two,three,four][0]);
-                        this.plays=this.addToList(this.plays,numsFour,4,[one,two,three,four]);
-                        for(let five=1;five<=this.plays[one,two,three,four].length-1;five++){
-                            let numsFive=this.createList(numsFour,this.plays[one,two,three,four,five][0]);
-                            this.plays=this.addToList(this.plays,numsFive,5,[one,two,three,four,five]);
-                            for(let six=1;six<=this.plays[one,two,three,four,five].length-1;six++){
-                                let numsSix=this.createList(numsFive,this.plays[one,two,three,four,five,six][0]);
-                                this.plays=this.addToList(this.plays,numsSix,6,[one,two,three,four,five,six]);
-                                for(let seven=1;seven<=this.plays[one,two,three,four,five,six].length-1;seven++){
-                                    let numsSeven=this.createList(numsSix,this.plays[one,two,three,four,five,six,seven][0]);
-                                    this.plays=this.addToList(this.plays,numsSeven,7,[one,two,three,four,five,six,seven]);
-                                    for(let eight=1;eight<=this.plays[one,two,three,four,five,six,seven].length-1;eight++){
-                                        let numsEight=this.createList(numsSeven,this.plays[one,two,three,four,five,six,seven,eight][0]);
-                                        this.plays=this.addToList(this.plays,numsEight,8,[one,two,three,four,five,six,seven,eight]);
-        }}}}}}}}
-        for(let one=0;one<=this.plays.length-1;one++){
-            for(let two=1;two<=this.plays[one].length-1;two++){
-                for(let three=1;three<=this.plays[one,two].length-1;three++){
-                    for(let four=1;four<=this.plays[one,two,three].length-1;four++){
-                        for(let five=1;five<=this.plays[one,two,three,four].length-1;five++){
-                            for(let six=1;six<=this.plays[one,two,three,four,five].length-1;six++){
-                                for(let seven=1;seven<=this.plays[one,two,three,four,five,six].length-1;seven++){
-                                    for(let eight=1;eight<=this.plays[one,two,three,four,five,six,seven].length-1;eight++){
-                                        this.path.push([this.plays[one][0],this.plays[one][two][0],this.plays[one][two][three][0],this.plays[one][two][three][four][0],
-                                        this.plays[one][two][three][four][five][0],this.plays[one][two][three][four][five][six][0],
-                                        this.plays[one][two][three][four][five][six][seven][0],this.plays[one][two][three][four][five][six][seven][eight][0],
-                                        this.plays[one][two][three][four][five][six][seven][eight][1][0]]);
-        }}}}}}}}
-    }
-    addToList(addList,numbersAdded,level,levels){
-        let listAddedTo=addList;
-        // console.log(numbersAdded);
-        if(level==1){
-            for(let i=0;i<=numbersAdded.length-1;i++){
-                listAddedTo[levels[0]].push([numbersAdded[i]]);
-        }}else if(level==2){
-            for(let i=0;i<=numbersAdded.length-1;i++){
-                listAddedTo[levels[0]][levels[1]].push([numbersAdded[i]]);
-        }}else if(level==3){
-            for(let i=0;i<=numbersAdded.length-1;i++){
-                listAddedTo[levels[0]][levels[1]][levels[2]].push([numbersAdded[i]]);
-        }}else if(level==4){
-            for(let i=0;i<=numbersAdded.length-1;i++){
-                listAddedTo[levels[0]][levels[1]][levels[2]][levels[3]].push([numbersAdded[i]]);
-        }}else if(level==5){
-            for(let i=0;i<=numbersAdded.length-1;i++){
-                listAddedTo[levels[0]][levels[1]][levels[2]][levels[3]][levels[4]].push([numbersAdded[i]]);
-        }}else if(level==6){
-            for(let i=0;i<=numbersAdded.length-1;i++){
-                listAddedTo[levels[0]][levels[1]][levels[2]][levels[3]][levels[4]][levels[5]].push([numbersAdded[i]]);
-        }}else if(level==7){
-            for(let i=0;i<=numbersAdded.length-1;i++){
-                listAddedTo[levels[0]][levels[1]][levels[2]][levels[3]][levels[4]][levels[5]][levels[6]].push([numbersAdded[i]]);
-        }}else if(level==8){
-            for(let i=0;i<=numbersAdded.length-1;i++){
-                // console.log(numbersAdded);
-                // console.log(i);
-                // console.log(levels);
-                // console.log(listAddedTo);
-                // console.log(listAddedTo[levels[0]][levels[1]][levels[2]][levels[3]][levels[4]][levels[5]][levels[6]]);
-                listAddedTo[levels[0]][levels[1]][levels[2]][levels[3]][levels[4]][levels[5]][levels[6]][levels[7]].push([numbersAdded[i]]);
-        }}
-        return listAddedTo;
-    }
-    createList(originalList,removedNumber){
-        let list=[];
-        for(let i=0;i<=originalList.length-1;i++){
-            if(removedNumber!=originalList[i]){
-                list.push(originalList[i]);
+        let temp=0;
+        for(let one=0;one<=locs.length-1;one++){
+            this.path.push([locs[one]]);
+            const locOne = Array.from(locs);
+            locOne.splice(locOne.indexOf(this.path[one][0]),1);
+            for(let two=1;two<=locOne.length-1;two++){
+                this.path[one].push([locOne[two]]);
+                const locTwo = Array.from(locOne);
+                locTwo.splice(locTwo.indexOf(this.path[one][two][0],1))
+                for(let three=1;three<=locTwo.length-1;three++){
+                    this.path[one][two].push([locTwo[three]]);
+                    const locThree = Array.from(locTwo);
+                    locThree.splice(locThree.indexOf(this.path[one][two][three][0],1))
+                    for(let four=1;four<=locThree.length-1;four++){
+                        this.path[one][two][three].push([locThree[four]]);
+                        const locFour = Array.from(locThree);
+                        locFour.splice(locFour.indexOf(this.path[one][two][three][four][0],1))
+                        for(let five=1;five<=locFour.length-1;five++){
+                            this.path[one][two][three][four].push([locFour[five]]);
+                            const locFive = Array.from(locFour);
+                            locFive.splice(locFive.indexOf(this.path[one][two][three][four][five][0],1))
+                            for(let six=1;six<=locFive.length-1;six++){
+                                this.path[one][two][three][four][five].push([locFive[six]]);
+                                const locSix = Array.from(locFive);
+                                locSix.splice(locSix.indexOf(this.path[one][two][three][four][five][six][0],1))
+                                for(let seven=1;seven<=locSix.length-1;seven++){
+                                    this.path[one][two][three][four][five][six].push([locSix[seven]]);
+                                    const locSeven = Array.from(locSix);
+                                    locSeven.splice(locSeven.indexOf(this.path[one][two][three][four][five][six][seven][0],1))
+                                    this.path[one][two][three][four][five][six][seven].push([locSeven[0],locSeven[1]]);
+                                    this.path[one][two][three][four][five][six][seven].push([locSeven[1],locSeven[0]]);
+                                    if(temp==0){
+                                        temp=1;
+                                        console.log(this.path);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        // console.log(list);
-        return list;
+        console.log(this.path);
+    }
+    logList(list1){
+        for(let i=0;i<=list1.length-1;i++){
+            console.log(list1[i]);
+        }
     }
     place(position1,position2){
         if(this.board[position2][position1]==""){
@@ -270,7 +233,7 @@ function gameLoop(currentTime) {
         if(gam.winner==""){
             // console.log(gam.amtGames);
             // console.log(gam.turnNumber);
-            gam.gamePlayer();
+            // gam.gamePlayer();
             gam.detectWin();
             gam.drawXAndY();
         }else{
