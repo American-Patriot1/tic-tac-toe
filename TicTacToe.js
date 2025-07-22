@@ -19,44 +19,66 @@ class Game{
         this.xWins=0;
         this.oWins=0;
         this.ties=0;
-        // const locs=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
-        const locs=[1,2,3,4,5,6,7,8,9]
+        const locs=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
         this.outcomes=[];
-        this.path=[];
-        let temp=0;
+        let path=[];
+        this.paths=[];
         for(let one=0;one<=locs.length-1;one++){
-            this.path.push([locs[one]]);
+            path.push([locs[one]]);
             const locOne = Array.from(locs);
-            locOne.splice(locOne.indexOf(this.path[one][0]),1);
-            for(let two=1;two<=locOne.length-1;two++){
-                this.path[one].push([locOne[two]]);
+            locOne.splice(locOne.indexOf(path[one][0]),1);
+            for(let two=0;two<=locOne.length-1;two++){
+                path[one].push([locOne[two]]);
                 const locTwo = Array.from(locOne);
-                locTwo.splice(locTwo.indexOf(this.path[one][two][0],1))
-                for(let three=1;three<=locTwo.length-1;three++){
-                    this.path[one][two].push([locTwo[three]]);
+                locTwo.splice(locTwo.indexOf(path[one][two+1][0]),1)
+                for(let three=0;three<=locTwo.length-1;three++){
+                    path[one][two+1].push([locTwo[three]]);
                     const locThree = Array.from(locTwo);
-                    locThree.splice(locThree.indexOf(this.path[one][two][three][0],1))
-                    for(let four=1;four<=locThree.length-1;four++){
-                        this.path[one][two][three].push([locThree[four]]);
+                    locThree.splice(locThree.indexOf(path[one][two+1][three+1][0]),1)
+                    for(let four=0;four<=locThree.length-1;four++){
+                        path[one][two+1][three+1].push([locThree[four]]);
                         const locFour = Array.from(locThree);
-                        locFour.splice(locFour.indexOf(this.path[one][two][three][four][0],1))
-                        for(let five=1;five<=locFour.length-1;five++){
-                            this.path[one][two][three][four].push([locFour[five]]);
+                        locFour.splice(locFour.indexOf(path[one][two+1][three+1][four+1][0]),1)
+                        for(let five=0;five<=locFour.length-1;five++){
+                            path[one][two+1][three+1][four+1].push([locFour[five]]);
                             const locFive = Array.from(locFour);
-                            locFive.splice(locFive.indexOf(this.path[one][two][three][four][five][0],1))
-                            for(let six=1;six<=locFive.length-1;six++){
-                                this.path[one][two][three][four][five].push([locFive[six]]);
+                            locFive.splice(locFive.indexOf(path[one][two+1][three+1][four+1][five+1][0]),1)
+                            for(let six=0;six<=locFive.length-1;six++){
+                                path[one][two+1][three+1][four+1][five+1].push([locFive[six]]);
                                 const locSix = Array.from(locFive);
-                                locSix.splice(locSix.indexOf(this.path[one][two][three][four][five][six][0],1))
-                                for(let seven=1;seven<=locSix.length-1;seven++){
-                                    this.path[one][two][three][four][five][six].push([locSix[seven]]);
+                                locSix.splice(locSix.indexOf(path[one][two+1][three+1][four+1][five+1][six+1][0]),1)
+                                for(let seven=0;seven<=locSix.length-1;seven++){
+                                    path[one][two+1][three+1][four+1][five+1][six+1].push([locSix[seven]]);
                                     const locSeven = Array.from(locSix);
-                                    locSeven.splice(locSeven.indexOf(this.path[one][two][three][four][five][six][seven][0],1))
-                                    this.path[one][two][three][four][five][six][seven].push([locSeven[0],locSeven[1]]);
-                                    this.path[one][two][three][four][five][six][seven].push([locSeven[1],locSeven[0]]);
-                                    if(temp==0){
-                                        temp=1;
-                                        console.log(this.path);
+                                    locSeven.splice(locSeven.indexOf(path[one][two+1][three+1][four+1][five+1][six+1][seven+1][0]),1)
+                                    path[one][two+1][three+1][four+1][five+1][six+1][seven+1].push([locSeven[0],locSeven[1]]);
+                                    path[one][two+1][three+1][four+1][five+1][six+1][seven+1].push([locSeven[1],locSeven[0]]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        console.log(path);
+        for(let one=0;one<=path.length-1;one++){
+            for(let two=1;two<=path[one].length-1;two++){
+                for(let three=1;three<=path[one][two].length-1;three++){
+                    for(let four=1;four<=path[one][two][three].length-1;four++){
+                        for(let five=1;five<=path[one][two][three][four].length-1;five++){
+                            for(let six=1;six<=path[one][two][three][four][five].length-1;six++){
+                                for(let seven=1;seven<=path[one][two][three][four][five][six].length-1;seven++){
+                                    for(let eight=1;eight<=path[one][two][three][four][five][six][seven].length-1;eight++){
+                                        this.paths.push([
+                                            path[one][0],
+                                            path[one][two][0],
+                                            path[one][two][three][0],
+                                            path[one][two][three][four][0],
+                                            path[one][two][three][four][five][0],
+                                            path[one][two][three][four][five][six][0],
+                                            path[one][two][three][four][five][six][seven][0],
+                                            path[one][two][three][four][five][six][seven][eight][0],
+                                            path[one][two][three][four][five][six][seven][eight][1]]);
                                     }
                                 }
                             }
@@ -65,12 +87,7 @@ class Game{
                 }
             }
         }
-        console.log(this.path);
-    }
-    logList(list1){
-        for(let i=0;i<=list1.length-1;i++){
-            console.log(list1[i]);
-        }
+        console.log(this.paths);
     }
     place(position1,position2){
         if(this.board[position2][position1]==""){
@@ -96,8 +113,7 @@ class Game{
         }
     }
     gamePlayer(){
-        // console.log((this.path[this.amtGames][this.turnNumber])-1);
-        this.place(this.converter[(this.path[this.amtGames][this.turnNumber])-1][0],this.converter[(this.path[this.amtGames][this.turnNumber])-1][1])
+        this.place(this.paths[this.amtGames][this.turnNumber][0],this.paths[this.amtGames][this.turnNumber][1])
     }
     drawXAndY(){
         ctx.fillStyle = "black";
@@ -129,25 +145,25 @@ class Game{
     detectWin(){
         let oOrX=["X","O"]
         for(let i=0;i<oOrX.length;i++)
-        if((oOrX[i]==this.board[0][1]) && (oOrX[i]==this.board[0][2]) && (oOrX[i]==this.board[0][0])){
-            this.winner=this.board[0][0];
-        }else if((oOrX[i]==this.board[1][0]) && (oOrX[i]==this.board[2][0]) && (oOrX[i]==this.board[0][0])){
-            this.winner=this.board[0][0];
-        }else if((oOrX[i]==this.board[2][1]) && (oOrX[i]==this.board[2][0]) && (oOrX[i]==this.board[2][2])){
-            this.winner=this.board[2][2];
-        }else if((oOrX[i]==this.board[1][2]) && (oOrX[i]==this.board[0][2]) && (oOrX[i]==this.board[2][2])){
-            this.winner=this.board[2][2];
-        }else if((oOrX[i]==this.board[1][0]) && (oOrX[i]==this.board[1][2]) && (oOrX[i]==this.board[1][1])){
-            this.winner=this.board[1][1];
-        }else if((oOrX[i]==this.board[0][1]) && (oOrX[i]==this.board[2][1]) && (oOrX[i]==this.board[1][1])){
-            this.winner=this.board[1][1];
-        }else if((oOrX[i]==this.board[0][0]) && (oOrX[i]==this.board[2][2]) && (oOrX[i]==this.board[1][1])){
-            this.winner=this.board[1][1];
-        }else if((oOrX[i]==this.board[0][2]) && (oOrX[i]==this.board[2][0]) && (oOrX[i]==this.board[1][1])){
-            this.winner=this.board[1][1];
-        }else if(!(this.board[0]).includes("")){if(!(this.board[1]).includes("")){if(!(this.board[2]).includes("")){
-            this.winner="T";
-        }}}
+            if((oOrX[i]==this.board[0][1]) && (oOrX[i]==this.board[0][2]) && (oOrX[i]==this.board[0][0])){
+                this.winner=this.board[0][0];
+            }else if((oOrX[i]==this.board[1][0]) && (oOrX[i]==this.board[2][0]) && (oOrX[i]==this.board[0][0])){
+                this.winner=this.board[0][0];
+            }else if((oOrX[i]==this.board[2][1]) && (oOrX[i]==this.board[2][0]) && (oOrX[i]==this.board[2][2])){
+                this.winner=this.board[2][2];
+            }else if((oOrX[i]==this.board[1][2]) && (oOrX[i]==this.board[0][2]) && (oOrX[i]==this.board[2][2])){
+                this.winner=this.board[2][2];
+            }else if((oOrX[i]==this.board[1][0]) && (oOrX[i]==this.board[1][2]) && (oOrX[i]==this.board[1][1])){
+                this.winner=this.board[1][1];
+            }else if((oOrX[i]==this.board[0][1]) && (oOrX[i]==this.board[2][1]) && (oOrX[i]==this.board[1][1])){
+                this.winner=this.board[1][1];
+            }else if((oOrX[i]==this.board[0][0]) && (oOrX[i]==this.board[2][2]) && (oOrX[i]==this.board[1][1])){
+                this.winner=this.board[1][1];
+            }else if((oOrX[i]==this.board[0][2]) && (oOrX[i]==this.board[2][0]) && (oOrX[i]==this.board[1][1])){
+                this.winner=this.board[1][1];
+            }else if(!(this.board[0]).includes("")){if(!(this.board[1]).includes("")){if(!(this.board[2]).includes("")){
+                this.winner="T";
+            }}}
         if(this.winner!=""){
             this.board=[["","",""],["","",""],["","",""]];
             if(this.winner=="X"){
@@ -156,7 +172,10 @@ class Game{
                 this.oWins++;
             }else if(this.winner=="T"){
             this.ties++;
-        }}
+            }
+            // this.amtGames++;
+            // this.turnNumber=0;
+        }
     }
     congratulateWinner(){
         ctx.fillStyle = "#000000";
@@ -186,6 +205,9 @@ class Game{
             ctx.fillStyle = "#000000";
             ctx.fillText("TIE!", 93, 70);
         }
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAA");
+        this.winner==""
+        this.amtGames++;
         this.turnNumber=0;
     }
 }
@@ -214,28 +236,28 @@ document.addEventListener('click',(event)=>{
         //     gam.place(2,2);
         // }
         if ((clickX >= 0) && (clickX <= 320) && (clickY >= 0) && (clickY <= 320)){
-            gam.turnNumber++;
+            // gam.turnNumber++;
         }
     }else if ((clickX >= 0) && (clickX <= 320) && (clickY >= 0) && (clickY <= 320)){
         gam.winner="";
-        gam.amtGames++;
-        gam.turnNumber=0;
+        // gam.amtGames++;
+        // gam.turnNumber=0;
     }
 });
 
 function gameLoop(currentTime) {
     const deltaTime = currentTime - lastTime;
-
-
     if (deltaTime >= gameSpeed) {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        
         if(gam.winner==""){
-            // console.log(gam.amtGames);
-            // console.log(gam.turnNumber);
-            // gam.gamePlayer();
+            gam.gamePlayer();
             gam.detectWin();
             gam.drawXAndY();
+            timer2++;
+            if(timer2>=1){
+                timer2=0;
+                gam.turnNumber++;
+            }
         }else{
             gam.congratulateWinner();
         }
@@ -248,4 +270,5 @@ function gameLoop(currentTime) {
 const gam = new Game();
 let gameSpeed=200;
 let lastTime=0;
+let timer2=0
 gameLoop(0,0,1);
