@@ -20,7 +20,7 @@ class Game{
         this.oWins=0;
         this.ties=0;
         const locs=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
-        this.outcomes=[];
+        this.outcomes=[[[0,0]],[[0,1]],[[0,2]],[[1,0]],[[1,1]],[[1,2]],[[2,0]],[[2,1]],[[2,2]]];
         let path=[];
         this.paths=[];
         for(let one=0;one<=locs.length-1;one++){
@@ -205,45 +205,44 @@ class Game{
             ctx.fillStyle = "#000000";
             ctx.fillText("TIE!", 93, 70);
         }
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAA");
-        this.winner==""
+        this.winner="";
         this.amtGames++;
         this.turnNumber=0;
     }
 }
 
-document.addEventListener('click',(event)=>{
-    const clickX = event.clientX - canvas.getBoundingClientRect().left;
-    const clickY = event.clientY - canvas.getBoundingClientRect().top;
-    if(gam.winner==""){
-        // if ((clickX >= 0) && (clickX <= 100) && (clickY >= 0) && (clickY <= 100)){
-        //     gam.place(0,0);
-        // }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 0) && (clickY <= 100)){
-        //     gam.place(1,0);
-        // }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 0) && (clickY <= 100)){
-        //     gam.place(2,0);
-        // }else if ((clickX >= 0) && (clickX <= 100) && (clickY >= 110) && (clickY <= 210)){
-        //     gam.place(0,1);
-        // }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 110) && (clickY <= 210)){
-        //     gam.place(1,1);
-        // }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 110) && (clickY <= 210)){
-        //     gam.place(2,1);
-        // }else if ((clickX >= 0) && (clickX <= 100) && (clickY >= 220) && (clickY <= 320)){
-        //     gam.place(0,2);
-        // }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 220) && (clickY <= 320)){
-        //     gam.place(1,2);
-        // }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 220) && (clickY <= 320)){
-        //     gam.place(2,2);
-        // }
-        if ((clickX >= 0) && (clickX <= 320) && (clickY >= 0) && (clickY <= 320)){
-            // gam.turnNumber++;
-        }
-    }else if ((clickX >= 0) && (clickX <= 320) && (clickY >= 0) && (clickY <= 320)){
-        gam.winner="";
-        // gam.amtGames++;
-        // gam.turnNumber=0;
-    }
-});
+// document.addEventListener('click',(event)=>{
+//     const clickX = event.clientX - canvas.getBoundingClientRect().left;
+//     const clickY = event.clientY - canvas.getBoundingClientRect().top;
+//     if(gam.winner==""){
+//         // if ((clickX >= 0) && (clickX <= 100) && (clickY >= 0) && (clickY <= 100)){
+//         //     gam.place(0,0);
+//         // }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 0) && (clickY <= 100)){
+//         //     gam.place(1,0);
+//         // }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 0) && (clickY <= 100)){
+//         //     gam.place(2,0);
+//         // }else if ((clickX >= 0) && (clickX <= 100) && (clickY >= 110) && (clickY <= 210)){
+//         //     gam.place(0,1);
+//         // }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 110) && (clickY <= 210)){
+//         //     gam.place(1,1);
+//         // }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 110) && (clickY <= 210)){
+//         //     gam.place(2,1);
+//         // }else if ((clickX >= 0) && (clickX <= 100) && (clickY >= 220) && (clickY <= 320)){
+//         //     gam.place(0,2);
+//         // }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 220) && (clickY <= 320)){
+//         //     gam.place(1,2);
+//         // }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 220) && (clickY <= 320)){
+//         //     gam.place(2,2);
+//         // }
+//         // if ((clickX >= 0) && (clickX <= 320) && (clickY >= 0) && (clickY <= 320)){
+//         //     gam.turnNumber++;
+//         // }
+//     }else if ((clickX >= 0) && (clickX <= 320) && (clickY >= 0) && (clickY <= 320)){
+//         gam.winner="";
+//         // gam.amtGames++;
+//         // gam.turnNumber=0;
+//     }
+// });
 
 function gameLoop(currentTime) {
     const deltaTime = currentTime - lastTime;
@@ -253,11 +252,7 @@ function gameLoop(currentTime) {
             gam.gamePlayer();
             gam.detectWin();
             gam.drawXAndY();
-            timer2++;
-            if(timer2>=1){
-                timer2=0;
-                gam.turnNumber++;
-            }
+            gam.turnNumber++;
         }else{
             gam.congratulateWinner();
         }
@@ -270,5 +265,4 @@ function gameLoop(currentTime) {
 const gam = new Game();
 let gameSpeed=200;
 let lastTime=0;
-let timer2=0
 gameLoop(0,0,1);
