@@ -11,18 +11,32 @@ const numCols = canvasWidth / squareSize;
 // console.log("-------------------------------");
 class Game{
     constructor(){
-        this.board=[["","",""],["","",""],["","",""]];
-        this.turn="X";
+        this.board=[[0,0,0],[0,0,0],[0,0,0]];
+        this.turn=1;
         this.turnNumber=0;
         this.amtGames=0;
-        this.winner="";
+        this.winner=0;
         this.xWins=0;
         this.oWins=0;
         this.ties=0;
-        const locs=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
-        this.outcomes=[[[0,0]],[[0,1]],[[0,2]],[[1,0]],[[1,1]],[[1,2]],[[2,0]],[[2,1]],[[2,2]]];
+        this.converter=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]];
+        this.winPositions=[
+            [0,1,2],
+            [3,4,5],
+            [6,7,8],
+            [0,3,6],
+            [1,4,7],
+            [2,5,8],
+            [0,4,8],
+            [2,4,6]
+        ]
+        const locs=[0,1,2,3,4,5,6,7,8];
+        // to account for simatry flip the board
+        // 512 ways to fill a 3x3 grid with 2 variables
+        // {turn1:0,turn2:0,turn3:0,turn4:0,turn5:0,turn6:0,turn7:0,turn8:0,turn9:0,1win:0,2win:0,draw:0,}
+        this.result=[];
         let path=[];
-        this.paths=[];
+        let paths=[];
         for(let one=0;one<=locs.length-1;one++){
             path.push([locs[one]]);
             const locOne = Array.from(locs);
@@ -60,7 +74,8 @@ class Game{
                 }
             }
         }
-        console.log(path);
+        let tempResultsArray=[];
+        let tempResultsObjects=[];
         for(let one=0;one<=path.length-1;one++){
             for(let two=1;two<=path[one].length-1;two++){
                 for(let three=1;three<=path[one][two].length-1;three++){
@@ -69,16 +84,43 @@ class Game{
                             for(let six=1;six<=path[one][two][three][four][five].length-1;six++){
                                 for(let seven=1;seven<=path[one][two][three][four][five][six].length-1;seven++){
                                     for(let eight=1;eight<=path[one][two][three][four][five][six][seven].length-1;eight++){
-                                        this.paths.push([
-                                            path[one][0],
-                                            path[one][two][0],
-                                            path[one][two][three][0],
-                                            path[one][two][three][four][0],
-                                            path[one][two][three][four][five][0],
-                                            path[one][two][three][four][five][six][0],
-                                            path[one][two][three][four][five][six][seven][0],
-                                            path[one][two][three][four][five][six][seven][eight][0],
-                                            path[one][two][three][four][five][six][seven][eight][1]]);
+                                        let moveSet=[path[one][0],path[one][two][0],path[one][two][three][0],path[one][two][three][four][0],path[one][two][three][four][five][0],
+                                            path[one][two][three][four][five][six][0],path[one][two][three][four][five][six][seven][0],
+                                            path[one][two][three][four][five][six][seven][eight][0],path[one][two][three][four][five][six][seven][eight][1]];
+                                        paths.push(moveSet);
+                                        let wnr=0;
+                                        let tempObject={turns:[],onewin:0,twowin:0,tie:0,board:[0,0,0,0,0,0,0,0,0]};
+                                        for(let move=0;wnr===0&&move<=moveSet.length-1;move++){
+                                            let player=0;
+                                            if(move%2===0){
+                                                player=1;
+                                            }else{
+                                                player=2;
+                                            }
+                                            tempObject.board[moveSet[move]]=player;
+                                            tempObject.turns.push(moveSet[move]);
+                                            this.addToList(move,moveSet,tempResultsArray,0);
+                                            if(move>=4){
+                                                for(let i=0;i<=this.winPositions.length-1;i++){
+                                                    if(tempObject.board[this.winPositions[i][0]]==tempObject.board[this.winPositions[i][1]]&&
+                                                        tempObject.board[this.winPositions[i][1]]==tempObject.board[this.winPositions[i][2]]&&
+                                                        tempObject.board[this.winPositions[i][1]]!=0
+                                                    ){
+                                                        if(tempObject.board[this.winPositions[i][1]]==1){
+                                                            wnr=1;
+                                                            tempObject.onewin++;
+                                                        }else if(tempObject.board[this.winPositions[i][1]]==2){
+                                                            wnr=2;
+                                                            tempObject.twowin++;
+                                                        }
+                                                    }
+                                                }
+                                            }else if(move===8){
+                                                wnr=3
+                                                tempObject.tie++;
+                                            }
+                                        }
+                                        tempResultsObjects.push(tempObject);
                                     }
                                 }
                             }
@@ -87,13 +129,53 @@ class Game{
                 }
             }
         }
-        console.log(this.paths);
+        let ow = 0;
+        let tw = 0;
+        let tie = 0;
+        let tempPathsCompleted=[];
+        for(let i in tempResultsObjects){
+            tempPathsCompleted.push(tempResultsObjects[i].turns);
+            ow+=tempResultsObjects[i].onewin;
+            tw+=tempResultsObjects[i].twowin;
+            tie+=tempResultsObjects[i].tie;
+        }
+        console.log(paths);
+        console.log(tempPathsCompleted);
+        console.log(path);
+        console.log(tempResultsArray);
+        console.log(tempResultsObjects);
+        console.log(ow);
+        console.log(tw);
+        console.log(tie);
+    }
+    //moveNum starts with 0
+    addToList(moveNum,moveOrder,list,index){
+        let position=-1;
+        let zeroFix=1;
+        if(index==0){
+            zeroFix=0;
+        }
+        if((index==0&&list.length===0)||(list.length-zeroFix===0&&zeroFix===1)){
+            list.push([moveOrder[index]]);
+        }else{
+            for(let i=zeroFix;i<=list.length-1&&position==-1;i++){;
+                if(list[i].indexOf(moveOrder[index])!=-1){
+                    position=i;
+                }
+            }
+            if(position==-1){
+                list.push([moveOrder[index]]);
+            }
+        }
+        if(moveNum!=index){
+            this.addToList(moveNum,moveOrder,list[position],index+1);
+        }
     }
     place(position1,position2){
-        if(this.board[position2][position1]==""){
+        if(this.board[position2][position1]==0){
             this.board[position2][position1]=this.turn;
             ctx.lineWidth=10;
-            if(this.turn=="X"){
+            if(this.turn==1){
                 ctx.strokeStyle="#ff0000";
                 ctx.beginPath();
                 ctx.moveTo(10+position1*110,10+position2*110);
@@ -101,19 +183,17 @@ class Game{
                 ctx.moveTo(10+position1*110,90+position2*110);
                 ctx.lineTo(90+position1*110,10+position2*110);
                 ctx.stroke();
-                this.turn="O";
-            }else if(this.turn=="O"){
+                this.turn=2;
+            }else if(this.turn==2){
                 ctx.strokeStyle = "#2000ff";
                 ctx.beginPath();
                 ctx.arc(50+position1*110,50+position2*110, 40, 0, 2 * Math.PI);
                 ctx.stroke();
-                this.turn="X";
+                this.turn=1;
             }
-            // this.turnNumber++;
+            this.turnNumber++;
+            this.detectWin();
         }
-    }
-    gamePlayer(){
-        this.place(this.paths[this.amtGames][this.turnNumber][0],this.paths[this.amtGames][this.turnNumber][1])
     }
     drawXAndY(){
         ctx.fillStyle = "black";
@@ -124,7 +204,7 @@ class Game{
         ctx.lineWidth=10;
         for(let y=0;y<=2;y++){
             for(let x=0;x<=2;x++){
-                if(this.board[y][x]=="X"){
+                if(this.board[y][x]==1){
                     ctx.strokeStyle="#ff0000";
                     ctx.beginPath();
                     ctx.moveTo(10+x*110,10+y*110);
@@ -132,7 +212,7 @@ class Game{
                     ctx.moveTo(10+x*110,90+y*110);
                     ctx.lineTo(90+x*110,10+y*110);
                     ctx.stroke();
-                }else if(this.board[y][x]=="O"){
+                }else if(this.board[y][x]==2){
                     ctx.strokeStyle = "#2000ff";
                     ctx.beginPath();
                     ctx.arc(50+x*110,50+y*110, 40, 0, 2 * Math.PI);
@@ -141,40 +221,29 @@ class Game{
             }
         }
     }
-
     detectWin(){
-        let oOrX=["X","O"]
-        for(let i=0;i<oOrX.length;i++)
-            if((oOrX[i]==this.board[0][1]) && (oOrX[i]==this.board[0][2]) && (oOrX[i]==this.board[0][0])){
-                this.winner=this.board[0][0];
-            }else if((oOrX[i]==this.board[1][0]) && (oOrX[i]==this.board[2][0]) && (oOrX[i]==this.board[0][0])){
-                this.winner=this.board[0][0];
-            }else if((oOrX[i]==this.board[2][1]) && (oOrX[i]==this.board[2][0]) && (oOrX[i]==this.board[2][2])){
-                this.winner=this.board[2][2];
-            }else if((oOrX[i]==this.board[1][2]) && (oOrX[i]==this.board[0][2]) && (oOrX[i]==this.board[2][2])){
-                this.winner=this.board[2][2];
-            }else if((oOrX[i]==this.board[1][0]) && (oOrX[i]==this.board[1][2]) && (oOrX[i]==this.board[1][1])){
-                this.winner=this.board[1][1];
-            }else if((oOrX[i]==this.board[0][1]) && (oOrX[i]==this.board[2][1]) && (oOrX[i]==this.board[1][1])){
-                this.winner=this.board[1][1];
-            }else if((oOrX[i]==this.board[0][0]) && (oOrX[i]==this.board[2][2]) && (oOrX[i]==this.board[1][1])){
-                this.winner=this.board[1][1];
-            }else if((oOrX[i]==this.board[0][2]) && (oOrX[i]==this.board[2][0]) && (oOrX[i]==this.board[1][1])){
-                this.winner=this.board[1][1];
-            }else if(!(this.board[0]).includes("")){if(!(this.board[1]).includes("")){if(!(this.board[2]).includes("")){
-                this.winner="T";
-            }}}
-        if(this.winner!=""){
-            this.board=[["","",""],["","",""],["","",""]];
-            if(this.winner=="X"){
+        if(this.turnNumber>=5){
+            for(let i=0;i<=this.winPositions.length-1;i++){
+                let space=this.board[this.converter[this.winPositions[i][1]][0]][this.converter[this.winPositions[i][1]][1]];
+                if(space!==0&&this.board[this.converter[this.winPositions[i][0]][0]][this.converter[this.winPositions[i][0]][1]]===
+                space&&space===this.board[this.converter[this.winPositions[i][2]][0]][this.converter[this.winPositions[i][2]][1]]){
+                    this.winner=space;
+                }
+            }
+        }else if(this.turnNumber===9){
+            this.winner=-1;
+        }
+        if(this.winner!=0){
+            this.board=[[0,0,0],[0,0,0],[0,0,0]];
+            if(this.winner==1){
                 this.xWins++;
-            }else if(this.winner=="O"){
+            }else if(this.winner==2){
                 this.oWins++;
-            }else if(this.winner=="T"){
+            }else if(this.winner==-1){
             this.ties++;
             }
-            // this.amtGames++;
-            // this.turnNumber=0;
+            this.amtGames++;
+            this.turnNumber=0;
         }
     }
     congratulateWinner(){
@@ -191,68 +260,59 @@ class Game{
         ctx.fillStyle = "#2000ff";
         ctx.fillText("O", 48, 250);
         ctx.font = "75px arial";
-        if(this.winner!="T"){
+        if(this.winner!=-1){
             ctx.fillStyle = "#000000";
             ctx.fillText("   WON!", 33, 70);
-            if(this.winner=="X"){
+            if(this.winner==1){
                 ctx.fillStyle="#ff0000";
-                ctx.fillText(this.winner, 25, 70);
-            }else if(this.winner=="O"){
+                ctx.fillText("X", 25, 70);
+            }else if(this.winner==2){
                 ctx.fillStyle = "#2000ff";
-                ctx.fillText(this.winner, 21, 70);
+                ctx.fillText("O", 21, 70);
             }
-        }else if(this.winner=="T"){
+        }else if(this.winner==-1){
             ctx.fillStyle = "#000000";
             ctx.fillText("TIE!", 93, 70);
         }
-        this.winner="";
-        this.amtGames++;
-        this.turnNumber=0;
+        // this.winner=0;
     }
 }
 
-// document.addEventListener('click',(event)=>{
-//     const clickX = event.clientX - canvas.getBoundingClientRect().left;
-//     const clickY = event.clientY - canvas.getBoundingClientRect().top;
-//     if(gam.winner==""){
-//         // if ((clickX >= 0) && (clickX <= 100) && (clickY >= 0) && (clickY <= 100)){
-//         //     gam.place(0,0);
-//         // }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 0) && (clickY <= 100)){
-//         //     gam.place(1,0);
-//         // }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 0) && (clickY <= 100)){
-//         //     gam.place(2,0);
-//         // }else if ((clickX >= 0) && (clickX <= 100) && (clickY >= 110) && (clickY <= 210)){
-//         //     gam.place(0,1);
-//         // }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 110) && (clickY <= 210)){
-//         //     gam.place(1,1);
-//         // }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 110) && (clickY <= 210)){
-//         //     gam.place(2,1);
-//         // }else if ((clickX >= 0) && (clickX <= 100) && (clickY >= 220) && (clickY <= 320)){
-//         //     gam.place(0,2);
-//         // }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 220) && (clickY <= 320)){
-//         //     gam.place(1,2);
-//         // }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 220) && (clickY <= 320)){
-//         //     gam.place(2,2);
-//         // }
-//         // if ((clickX >= 0) && (clickX <= 320) && (clickY >= 0) && (clickY <= 320)){
-//         //     gam.turnNumber++;
-//         // }
-//     }else if ((clickX >= 0) && (clickX <= 320) && (clickY >= 0) && (clickY <= 320)){
-//         gam.winner="";
-//         // gam.amtGames++;
-//         // gam.turnNumber=0;
-//     }
-// });
+document.addEventListener('click',(event)=>{
+    const clickX = event.clientX - canvas.getBoundingClientRect().left;
+    const clickY = event.clientY - canvas.getBoundingClientRect().top;
+    if(gam.winner==0){
+        if ((clickX >= 0) && (clickX <= 100) && (clickY >= 0) && (clickY <= 100)){
+            gam.place(0,0);
+        }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 0) && (clickY <= 100)){
+            gam.place(1,0);
+        }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 0) && (clickY <= 100)){
+            gam.place(2,0);
+        }else if ((clickX >= 0) && (clickX <= 100) && (clickY >= 110) && (clickY <= 210)){
+            gam.place(0,1);
+        }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 110) && (clickY <= 210)){
+            gam.place(1,1);
+        }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 110) && (clickY <= 210)){
+            gam.place(2,1);
+        }else if ((clickX >= 0) && (clickX <= 100) && (clickY >= 220) && (clickY <= 320)){
+            gam.place(0,2);
+        }else if ((clickX >= 110) && (clickX <= 210) && (clickY >= 220) && (clickY <= 320)){
+            gam.place(1,2);
+        }else if ((clickX >= 220) && (clickX <= 320) && (clickY >= 220) && (clickY <= 320)){
+            gam.place(2,2);
+        }
+    }else if ((clickX >= 0) && (clickX <= 320) && (clickY >= 0) && (clickY <= 320)){
+        gam.winner=0;
+    }
+});
 
 function gameLoop(currentTime) {
     const deltaTime = currentTime - lastTime;
     if (deltaTime >= gameSpeed) {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        if(gam.winner==""){
-            gam.gamePlayer();
-            gam.detectWin();
+        if(gam.winner==0){
             gam.drawXAndY();
-            gam.turnNumber++;
+            // gam.turnNumber++;
         }else{
             gam.congratulateWinner();
         }
@@ -263,6 +323,6 @@ function gameLoop(currentTime) {
     requestAnimationFrame(gameLoop);
 }
 const gam = new Game();
-let gameSpeed=200;
+let gameSpeed=1;
 let lastTime=0;
 gameLoop(0,0,1);
