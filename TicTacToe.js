@@ -36,7 +36,6 @@ class Game{
         // {turn1:0,turn2:0,turn3:0,turn4:0,turn5:0,turn6:0,turn7:0,turn8:0,turn9:0,1win:0,2win:0,draw:0,}
         this.result=[];
         let path=[];
-        let paths=[];
         for(let one=0;one<=locs.length-1;one++){
             path.push([locs[one]]);
             const locOne = Array.from(locs);
@@ -76,51 +75,66 @@ class Game{
         }
         let tempResultsArray=[];
         let tempResultsObjects=[];
+        let winLevel=-1;
         for(let one=0;one<=path.length-1;one++){
             for(let two=1;two<=path[one].length-1;two++){
                 for(let three=1;three<=path[one][two].length-1;three++){
                     for(let four=1;four<=path[one][two][three].length-1;four++){
                         for(let five=1;five<=path[one][two][three][four].length-1;five++){
+                            if(winLevel>=4){
+                                winLevel=-1;
+                            }
                             for(let six=1;six<=path[one][two][three][four][five].length-1;six++){
-                                for(let seven=1;seven<=path[one][two][three][four][five][six].length-1;seven++){
-                                    for(let eight=1;eight<=path[one][two][three][four][five][six][seven].length-1;eight++){
-                                        let moveSet=[path[one][0],path[one][two][0],path[one][two][three][0],path[one][two][three][four][0],path[one][two][three][four][five][0],
-                                            path[one][two][three][four][five][six][0],path[one][two][three][four][five][six][seven][0],
-                                            path[one][two][three][four][five][six][seven][eight][0],path[one][two][three][four][five][six][seven][eight][1]];
-                                        paths.push(moveSet);
-                                        let wnr=0;
-                                        let tempObject={turns:[],onewin:0,twowin:0,tie:0,board:[0,0,0,0,0,0,0,0,0]};
-                                        for(let move=0;wnr===0&&move<=moveSet.length-1;move++){
-                                            let player=0;
-                                            if(move%2===0){
-                                                player=1;
-                                            }else{
-                                                player=2;
-                                            }
-                                            tempObject.board[moveSet[move]]=player;
-                                            tempObject.turns.push(moveSet[move]);
-                                            this.addToList(move,moveSet,tempResultsArray,0);
-                                            if(move>=4){
-                                                for(let i=0;i<=this.winPositions.length-1;i++){
-                                                    if(tempObject.board[this.winPositions[i][0]]==tempObject.board[this.winPositions[i][1]]&&
-                                                        tempObject.board[this.winPositions[i][1]]==tempObject.board[this.winPositions[i][2]]&&
-                                                        tempObject.board[this.winPositions[i][1]]!=0
-                                                    ){
-                                                        if(tempObject.board[this.winPositions[i][1]]==1){
-                                                            wnr=1;
-                                                            tempObject.onewin++;
-                                                        }else if(tempObject.board[this.winPositions[i][1]]==2){
-                                                            wnr=2;
-                                                            tempObject.twowin++;
+                                if((winLevel>=5)||(winLevel==-1)){
+                                    winLevel=-1;
+                                    for(let seven=1;seven<=path[one][two][three][four][five][six].length-1;seven++){
+                                        if((winLevel>=6)||(winLevel==-1)){
+                                            winLevel=-1;
+                                            for(let eight=1;eight<=path[one][two][three][four][five][six][seven].length-1;eight++){
+                                                if((winLevel>=7)||(winLevel==-1)){
+                                                    winLevel=-1;
+                                                    let moveSet=[path[one][0],path[one][two][0],path[one][two][three][0],path[one][two][three][four][0],path[one][two][three][four][five][0],
+                                                        path[one][two][three][four][five][six][0],path[one][two][three][four][five][six][seven][0],
+                                                        path[one][two][three][four][five][six][seven][eight][0],path[one][two][three][four][five][six][seven][eight][1]];
+                                                    let wnr=0;
+                                                    let tempObject={turns:[],onewin:0,twowin:0,tie:0,board:[0,0,0,0,0,0,0,0,0],winLevel:-1};
+                                                    for(let move=0;wnr===0&&move<=moveSet.length-1;move++){
+                                                        let player=0;
+                                                        if(move%2===0){
+                                                            player=1;
+                                                        }else{
+                                                            player=2;
+                                                        }
+                                                        tempObject.board[moveSet[move]]=player;
+                                                        tempObject.turns.push(moveSet[move]);
+                                                        this.addToList(move,moveSet,tempResultsArray,0);
+                                                        if(move>=4){
+                                                            for(let i=0;i<=this.winPositions.length-1;i++){
+                                                                if(tempObject.board[this.winPositions[i][0]]==tempObject.board[this.winPositions[i][1]]&&
+                                                                    tempObject.board[this.winPositions[i][1]]==tempObject.board[this.winPositions[i][2]]&&
+                                                                    tempObject.board[this.winPositions[i][1]]!=0
+                                                                ){
+                                                                    if(tempObject.board[this.winPositions[i][1]]==1){
+                                                                        wnr=1;
+                                                                        tempObject.onewin++;
+                                                                    }else if(tempObject.board[this.winPositions[i][1]]==2){
+                                                                        wnr=2;
+                                                                        tempObject.twowin++;
+                                                                    }
+                                                                    winLevel=move;
+                                                                    tempObject.winLevel=move;
+                                                                }
+                                                            }
+                                                        }
+                                                        if(move===8&&wnr==0){
+                                                            wnr=3
+                                                            tempObject.tie++;
                                                         }
                                                     }
+                                                    tempResultsObjects.push(tempObject);
                                                 }
-                                            }else if(move===8){
-                                                wnr=3
-                                                tempObject.tie++;
                                             }
                                         }
-                                        tempResultsObjects.push(tempObject);
                                     }
                                 }
                             }
@@ -139,9 +153,7 @@ class Game{
             tw+=tempResultsObjects[i].twowin;
             tie+=tempResultsObjects[i].tie;
         }
-        console.log(paths);
         console.log(tempPathsCompleted);
-        console.log(path);
         console.log(tempResultsArray);
         console.log(tempResultsObjects);
         console.log(ow);
@@ -230,7 +242,8 @@ class Game{
                     this.winner=space;
                 }
             }
-        }else if(this.turnNumber===9){
+        }
+        if(this.turnNumber===9&&this.winner==0){
             this.winner=-1;
         }
         if(this.winner!=0){
