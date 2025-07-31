@@ -115,7 +115,11 @@ class Game{
                                                                 ){
                                                                     if(tempObject.board[this.winPositions[i][1]]==1){
                                                                         wnr=1;
-                                                                        tempObject.onewin++;
+                                                                        if(tempObject.onewin!=1){
+                                                                            tempObject.onewin++;
+                                                                        }else{
+                                                                            console.log(tempObject);
+                                                                        }
                                                                     }else if(tempObject.board[this.winPositions[i][1]]==2){
                                                                         wnr=2;
                                                                         tempObject.twowin++;
@@ -145,40 +149,41 @@ class Game{
         let ow = 0;
         let tw = 0;
         let tie = 0;
-        let ow1 = 0;
+        let ow1 = 1;
         let tw1 = 0;
         let tie1 = 0;
         let tempPathsCompleted=[];
-        let tempBoardSymmetry=[[[1,2,1],[2,1,2],[1,0,0]],[[1, 2, 1], [2, 1, 2], [2, 1, 1]]];
+        let tempBoardSymmetry=[[[1,2,1],[2,1,2],[1,0,0]]];
         for(let i in tempResultsObjects){
             tempPathsCompleted.push(tempResultsObjects[i].turns);
             ow+=tempResultsObjects[i].onewin;
             tw+=tempResultsObjects[i].twowin;
             tie+=tempResultsObjects[i].tie;
             let alreadyEqual=0;
-            let tempBoard=Array.from(tempResultsObjects[i].board);
-            tempBoard=[[tempBoard[0],tempBoard[1],tempBoard[2]],[tempBoard[3],tempBoard[4],tempBoard[5]],[tempBoard[6],tempBoard[7],tempBoard[8]]]
-            this.rotate(tempBoard);
-            let tempBoard2=Array.from(tempBoard);
-            this.rotate(tempBoard);
-            let tempBoard3=Array.from(tempBoard);
-            this.rotate(tempBoard);
-            let tempBoard4=Array.from(tempBoard);
-            this.rotate(tempBoard);
-            this.flip(tempBoard,"v");
-            let tempBoard5=Array.from(tempBoard);
-            this.flip(tempBoard,"v");
-            this.flip(tempBoard,"h");
-            let tempBoard6=Array.from(tempBoard);
-            this.flip(tempBoard,"h");
-            this.flip(tempBoard,"sr");
-            let tempBoard7=Array.from(tempBoard);
-            this.flip(tempBoard,"sr");
-            this.flip(tempBoard,"sl");
-            let tempBoard8=Array.from(tempBoard);
-            this.flip(tempBoard,"sl");
-            for(let b=tempBoardSymmetry.length-1;(b>=0)&&alreadyEqual==0;b-=1){
-                if(this.isEqual(tempBoard,tempBoardSymmetry[b])==true){
+            tempResultsObjects[i].board=[[tempResultsObjects[i].board[0],tempResultsObjects[i].board[1],tempResultsObjects[i].board[2]],[tempResultsObjects[i].board[3],
+            tempResultsObjects[i].board[4],tempResultsObjects[i].board[5]],[tempResultsObjects[i].board[6],tempResultsObjects[i].board[7],tempResultsObjects[i].board[8]]]
+            tempResultsObjects[i].board=this.rotate(tempResultsObjects[i].board);
+            if(i==0){console.log(Array.from(tempResultsObjects[i].board));}
+            let tempBoard2=Array.from(tempResultsObjects[i].board);
+            tempResultsObjects[i].board=this.rotate(tempResultsObjects[i].board);
+            let tempBoard3=Array.from(tempResultsObjects[i].board);
+            tempResultsObjects[i].board=this.rotate(tempResultsObjects[i].board);
+            let tempBoard4=Array.from(tempResultsObjects[i].board);
+            tempResultsObjects[i].board=this.rotate(tempResultsObjects[i].board);
+            tempResultsObjects[i].board=this.flip(tempResultsObjects[i].board,"v");
+            let tempBoard5=Array.from(tempResultsObjects[i].board);
+            tempResultsObjects[i].board=this.flip(tempResultsObjects[i].board,"v");
+            tempResultsObjects[i].board=this.flip(tempResultsObjects[i].board,"h");
+            let tempBoard6=Array.from(tempResultsObjects[i].board);
+            tempResultsObjects[i].board=this.flip(tempResultsObjects[i].board,"h");
+            tempResultsObjects[i].board=this.flip(tempResultsObjects[i].board,"sr");
+            let tempBoard7=Array.from(tempResultsObjects[i].board);
+            tempResultsObjects[i].board=this.flip(tempResultsObjects[i].board,"sr");
+            tempResultsObjects[i].board=this.flip(tempResultsObjects[i].board,"sl");
+            let tempBoard8=Array.from(tempResultsObjects[i].board);
+            tempResultsObjects[i].board=this.flip(tempResultsObjects[i].board,"sl");
+            for(let b=0;(b<=tempBoardSymmetry.length-1)&&alreadyEqual==0;b++){
+                if(this.isEqual(tempResultsObjects[i].board,tempBoardSymmetry[b])==true){
                     alreadyEqual=1;
                 }else if(this.isEqual(tempBoard2,tempBoardSymmetry[b])==true){
                     alreadyEqual=1;
@@ -201,6 +206,12 @@ class Game{
                     ow1+=tempResultsObjects[i].onewin;
                     tw1+=tempResultsObjects[i].twowin;
                     tie1+=tempResultsObjects[i].tie;
+                    if(tempResultsObjects[i].onewin+tempResultsObjects[i].twowin+tempResultsObjects[i].tie!=1){
+                        console.log(i);
+                        console.log(tempResultsObjects[i].onewin);
+                        console.log(tempResultsObjects[i].twowin);
+                        console.log(tempResultsObjects[i].tie);
+                    }
             }
         }
         console.log(tempPathsCompleted);
@@ -248,19 +259,19 @@ class Game{
         }
     }
     rotate(list){
-        list=[[list[2][0],list[1][0],list[0][0]],[list[2][1],list[1][1],list[0][1]],[list[2][2],list[1][2],list[0][2]]];
+        return [[list[2][0],list[1][0],list[0][0]],[list[2][1],list[1][1],list[0][1]],[list[2][2],list[1][2],list[0][2]]];
     }
     flip(list,type){
         if(type=="v"){
-            list=[[list[2][0],list[2][1],list[2][2]],[list[1][0],list[1][1],list[1][2]],[list[0][0],list[0][1],list[0][2]]];
+            return [[list[2][0],list[2][1],list[2][2]],[list[1][0],list[1][1],list[1][2]],[list[0][0],list[0][1],list[0][2]]];
         }else if(type=="h"){
-            list=[[list[0][2],list[0][1],list[0][0]],[list[1][2],list[1][1],list[1][0]],[list[2][2],list[2][1],list[2][0]]];
+            return [[list[0][2],list[0][1],list[0][0]],[list[1][2],list[1][1],list[1][0]],[list[2][2],list[2][1],list[2][0]]];
         // /
         }else if(type=="sr"){
-            list=[[list[2][2],list[1][2],list[0][2]],[list[2][1],list[1][1],list[0][1]],[list[2][0],list[1][0],list[0][0]]];
+            return [[list[2][2],list[1][2],list[0][2]],[list[2][1],list[1][1],list[0][1]],[list[2][0],list[1][0],list[0][0]]];
         // \
         }else if(type=="sl"){
-            list=[[list[0][0],list[1][0],list[2][0]],[list[0][1],list[1][1],list[2][1]],[list[0][2],list[1][2],list[2][2]]];
+            return [[list[0][0],list[1][0],list[2][0]],[list[0][1],list[1][1],list[2][1]],[list[0][2],list[1][2],list[2][2]]];
         }
     }
     place(position1,position2){
