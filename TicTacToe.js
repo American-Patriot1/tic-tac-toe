@@ -150,7 +150,6 @@ class Game{
         let tie1 = 0;
         let tempPathsCompleted=[];
         let tempBoardSymmetry=[[[1,2,1],[2,1,2],[1,0,0]],[[1, 2, 1], [2, 1, 2], [2, 1, 1]]];
-        let count=0;
         for(let i in tempResultsObjects){
             tempPathsCompleted.push(tempResultsObjects[i].turns);
             ow+=tempResultsObjects[i].onewin;
@@ -158,7 +157,7 @@ class Game{
             tie+=tempResultsObjects[i].tie;
             let alreadyEqual=0;
             let tempBoard=Array.from(tempResultsObjects[i].board);
-            tempBoard=[[tempBoard[0],tempBoard[1],tempBoard[2]],[tempBoard[4],tempBoard[4],tempBoard[5]],[tempBoard[6],tempBoard[7],tempBoard[8]]]
+            tempBoard=[[tempBoard[0],tempBoard[1],tempBoard[2]],[tempBoard[3],tempBoard[4],tempBoard[5]],[tempBoard[6],tempBoard[7],tempBoard[8]]]
             this.rotate(tempBoard);
             let tempBoard2=Array.from(tempBoard);
             this.rotate(tempBoard);
@@ -167,18 +166,18 @@ class Game{
             let tempBoard4=Array.from(tempBoard);
             this.rotate(tempBoard);
             this.flip(tempBoard,"v");
-            let tempBoard5=Array.from(tempBoard)
+            let tempBoard5=Array.from(tempBoard);
             this.flip(tempBoard,"v");
             this.flip(tempBoard,"h");
-            let tempBoard6=Array.from(tempBoard)
+            let tempBoard6=Array.from(tempBoard);
             this.flip(tempBoard,"h");
             this.flip(tempBoard,"sr");
-            let tempBoard7=Array.from(tempBoard)
+            let tempBoard7=Array.from(tempBoard);
             this.flip(tempBoard,"sr");
             this.flip(tempBoard,"sl");
-            let tempBoard8=Array.from(tempBoard)
+            let tempBoard8=Array.from(tempBoard);
             this.flip(tempBoard,"sl");
-            for(let b=0;(b<=tempBoardSymmetry.length-1)&&alreadyEqual==0;b++){
+            for(let b=tempBoardSymmetry.length-1;(b>=0)&&alreadyEqual==0;b-=1){
                 if(this.isEqual(tempBoard,tempBoardSymmetry[b])==true){
                     alreadyEqual=1;
                 }else if(this.isEqual(tempBoard2,tempBoardSymmetry[b])==true){
@@ -195,21 +194,14 @@ class Game{
                     alreadyEqual=1;
                 }else if(this.isEqual(tempBoard8,tempBoardSymmetry[b])==true){
                     alreadyEqual=1;
-                }else{
-                    if(count==0){
-                        console.log(tempBoard)
-                        console.log(tempResultsObjects[i].board)
-                        console.log(Array.from(tempBoardSymmetry))
-                        console.log(this.isEqual(tempBoard,tempBoardSymmetry[b]))
-                    }
-                    alreadyEqual=1;
-                    tempBoardSymmetry.push(tempBoard);
+                }
+            }
+            if(alreadyEqual==0){
+                    tempBoardSymmetry.push(Array.from(tempResultsObjects[i].board));
                     ow1+=tempResultsObjects[i].onewin;
                     tw1+=tempResultsObjects[i].twowin;
                     tie1+=tempResultsObjects[i].tie;
-                }
             }
-            count++;
         }
         console.log(tempPathsCompleted);
         console.log(tempResultsArray);
