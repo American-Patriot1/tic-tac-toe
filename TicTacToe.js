@@ -33,7 +33,6 @@ class Game{
         const locs=[0,1,2,3,4,5,6,7,8];
         // to account for simatry flip the board
         // 512 ways to fill a 3x3 grid with 2 variables
-        // {turn1:0,turn2:0,turn3:0,turn4:0,turn5:0,turn6:0,turn7:0,turn8:0,turn9:0,1win:0,2win:0,draw:0,}
         this.result=[];
         let path=[];
         for(let one=0;one<=locs.length-1;one++){
@@ -146,12 +145,71 @@ class Game{
         let ow = 0;
         let tw = 0;
         let tie = 0;
+        let ow1 = 0;
+        let tw1 = 0;
+        let tie1 = 0;
         let tempPathsCompleted=[];
+        let tempBoardSymmetry=[[[1,2,1],[2,1,2],[1,0,0]],[[1, 2, 1], [2, 1, 2], [2, 1, 1]]];
+        let count=0;
         for(let i in tempResultsObjects){
             tempPathsCompleted.push(tempResultsObjects[i].turns);
             ow+=tempResultsObjects[i].onewin;
             tw+=tempResultsObjects[i].twowin;
             tie+=tempResultsObjects[i].tie;
+            let alreadyEqual=0;
+            let tempBoard=Array.from(tempResultsObjects[i].board);
+            tempBoard=[[tempBoard[0],tempBoard[1],tempBoard[2]],[tempBoard[4],tempBoard[4],tempBoard[5]],[tempBoard[6],tempBoard[7],tempBoard[8]]]
+            this.rotate(tempBoard);
+            let tempBoard2=Array.from(tempBoard);
+            this.rotate(tempBoard);
+            let tempBoard3=Array.from(tempBoard);
+            this.rotate(tempBoard);
+            let tempBoard4=Array.from(tempBoard);
+            this.rotate(tempBoard);
+            this.flip(tempBoard,"v");
+            let tempBoard5=Array.from(tempBoard)
+            this.flip(tempBoard,"v");
+            this.flip(tempBoard,"h");
+            let tempBoard6=Array.from(tempBoard)
+            this.flip(tempBoard,"h");
+            this.flip(tempBoard,"sr");
+            let tempBoard7=Array.from(tempBoard)
+            this.flip(tempBoard,"sr");
+            this.flip(tempBoard,"sl");
+            let tempBoard8=Array.from(tempBoard)
+            this.flip(tempBoard,"sl");
+            for(let b=0;(b<=tempBoardSymmetry.length-1)&&alreadyEqual==0;b++){
+                if(this.isEqual(tempBoard,tempBoardSymmetry[b])==true){
+                    alreadyEqual=1;
+                }else if(this.isEqual(tempBoard2,tempBoardSymmetry[b])==true){
+                    alreadyEqual=1;
+                }else if(this.isEqual(tempBoard3,tempBoardSymmetry[b])==true){
+                    alreadyEqual=1;
+                }else if(this.isEqual(tempBoard4,tempBoardSymmetry[b])==true){
+                    alreadyEqual=1;
+                }else if(this.isEqual(tempBoard5,tempBoardSymmetry[b])==true){
+                    alreadyEqual=1;
+                }else if(this.isEqual(tempBoard6,tempBoardSymmetry[b])==true){
+                    alreadyEqual=1;
+                }else if(this.isEqual(tempBoard7,tempBoardSymmetry[b])==true){
+                    alreadyEqual=1;
+                }else if(this.isEqual(tempBoard8,tempBoardSymmetry[b])==true){
+                    alreadyEqual=1;
+                }else{
+                    if(count==0){
+                        console.log(tempBoard)
+                        console.log(tempResultsObjects[i].board)
+                        console.log(Array.from(tempBoardSymmetry))
+                        console.log(this.isEqual(tempBoard,tempBoardSymmetry[b]))
+                    }
+                    alreadyEqual=1;
+                    tempBoardSymmetry.push(tempBoard);
+                    ow1+=tempResultsObjects[i].onewin;
+                    tw1+=tempResultsObjects[i].twowin;
+                    tie1+=tempResultsObjects[i].tie;
+                }
+            }
+            count++;
         }
         console.log(tempPathsCompleted);
         console.log(tempResultsArray);
@@ -159,6 +217,11 @@ class Game{
         console.log(ow);
         console.log(tw);
         console.log(tie);
+        console.log(tempBoardSymmetry);
+        console.log(ow1);
+        console.log(tw1);
+        console.log(tie1);
+        
     }
     //moveNum starts with 0
     addToList(moveNum,moveOrder,list,index){
@@ -181,6 +244,31 @@ class Game{
         }
         if(moveNum!=index){
             this.addToList(moveNum,moveOrder,list[position],index+1);
+        }
+    }
+    isEqual(list1,list2){
+        if((list1[0][0]==list2[0][0])&&(list1[0][1]==list2[0][1])&&(list1[0][2]==list2[0][2])
+        &&(list1[1][0]==list2[1][0])&&(list1[1][1]==list2[1][1])&&(list1[1][2]==list2[1][2])
+        &&(list1[2][0]==list2[2][0])&&(list1[2][1]==list2[2][1])&&(list1[2][2]==list2[2][2])){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    rotate(list){
+        list=[[list[2][0],list[1][0],list[0][0]],[list[2][1],list[1][1],list[0][1]],[list[2][2],list[1][2],list[0][2]]];
+    }
+    flip(list,type){
+        if(type=="v"){
+            list=[[list[2][0],list[2][1],list[2][2]],[list[1][0],list[1][1],list[1][2]],[list[0][0],list[0][1],list[0][2]]];
+        }else if(type=="h"){
+            list=[[list[0][2],list[0][1],list[0][0]],[list[1][2],list[1][1],list[1][0]],[list[2][2],list[2][1],list[2][0]]];
+        // /
+        }else if(type=="sr"){
+            list=[[list[2][2],list[1][2],list[0][2]],[list[2][1],list[1][1],list[0][1]],[list[2][0],list[1][0],list[0][0]]];
+        // \
+        }else if(type=="sl"){
+            list=[[list[0][0],list[1][0],list[2][0]],[list[0][1],list[1][1],list[2][1]],[list[0][2],list[1][2],list[2][2]]];
         }
     }
     place(position1,position2){
