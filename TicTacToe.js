@@ -117,8 +117,6 @@ class Game{
                                                                         wnr=1;
                                                                         if(tempObject.onewin!=1){
                                                                             tempObject.onewin++;
-                                                                        }else{
-                                                                            console.log(tempObject);
                                                                         }
                                                                     }else if(tempObject.board[this.winPositions[i][1]]==2){
                                                                         wnr=2;
@@ -163,7 +161,6 @@ class Game{
             tempResultsObjects[i].board=[[tempResultsObjects[i].board[0],tempResultsObjects[i].board[1],tempResultsObjects[i].board[2]],[tempResultsObjects[i].board[3],
             tempResultsObjects[i].board[4],tempResultsObjects[i].board[5]],[tempResultsObjects[i].board[6],tempResultsObjects[i].board[7],tempResultsObjects[i].board[8]]]
             tempResultsObjects[i].board=this.rotate(tempResultsObjects[i].board);
-            if(i==0){console.log(Array.from(tempResultsObjects[i].board));}
             let tempBoard2=Array.from(tempResultsObjects[i].board);
             tempResultsObjects[i].board=this.rotate(tempResultsObjects[i].board);
             let tempBoard3=Array.from(tempResultsObjects[i].board);
@@ -206,12 +203,6 @@ class Game{
                     ow1+=tempResultsObjects[i].onewin;
                     tw1+=tempResultsObjects[i].twowin;
                     tie1+=tempResultsObjects[i].tie;
-                    if(tempResultsObjects[i].onewin+tempResultsObjects[i].twowin+tempResultsObjects[i].tie!=1){
-                        console.log(i);
-                        console.log(tempResultsObjects[i].onewin);
-                        console.log(tempResultsObjects[i].twowin);
-                        console.log(tempResultsObjects[i].tie);
-                    }
             }
         }
         console.log(tempPathsCompleted);
