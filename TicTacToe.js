@@ -205,6 +205,7 @@ class Game{
                     tie1+=tempResultsObjects[i].tie;
             }
         }
+        console.log(path);
         console.log(tempPathsCompleted);
         console.log(tempResultsArray);
         console.log(tempResultsObjects);
@@ -215,7 +216,91 @@ class Game{
         console.log(ow1);
         console.log(tw1);
         console.log(tie1);
-        
+        this.paths=[];
+        this.count=0;
+        this.createPath([0,1,2,3,4,5,6,7,8],0);
+        console.log(this.paths);
+    }
+    createPath(nums,num,boardStored,turnsStored){
+        // this.count++;
+        // console.log(this.count);
+        // console.log(this.paths);
+        for(let a=0;a<=nums.length-1;a++){
+            if(num!=0){
+                let board=Array.from(boardStored);
+                let newNums=Array.from(nums);
+                board[nums[a]]=num%2+1;
+                let turns=Array.from(turnsStored);
+                turns.push(nums[a]);
+                newNums.splice(newNums.indexOf(nums[a]),1);
+                let newNum=num+1;
+                if(num<4){
+                    this.createPath(newNums,newNum,board,turns);
+                }else{
+                    let wnr=0;
+                    let tempObject={playOrder:turns,onewin:0,twowin:0,tie:0,boardLayout:[[board[0],board[1],board[2]],[board[3],board[4],board[5]],[board[6],board[7],board[8]]],winLevel:-1};
+                    for(let b=0;b<=this.winPositions.length-1&&wnr==0;b++){
+                        if(board[this.winPositions[b][0]]==board[this.winPositions[b][1]]&&
+                            board[this.winPositions[b][1]]==board[this.winPositions[b][2]]&&
+                            board[this.winPositions[b][1]]!=0
+                        ){
+                            if(board[this.winPositions[b][1]]==1){
+                                wnr=1;
+                                if(tempObject.onewin!=1){
+                                    tempObject.onewin++;
+                                }
+                            }else if(board[this.winPositions[b][1]]==2){
+                                wnr=2;
+                                tempObject.twowin++;
+                            }
+                            tempObject.winLevel=num;
+                        }else if(board.includes(0)==false){
+                            wnr=3
+                            tempObject.tie++;
+                        }
+                    }
+                    if(wnr!=0){
+                        if(this.paths.length!=0){
+                            let board1=Array.from(tempObject.boardLayout);
+                            let equal=0;
+                            let flips=['','','','v','h','sr','sl']
+                            for(let i=0;i<=this.paths.length-1&&equal==0;i++){
+                                for(let j=0;j<=7;j++){
+                                    if(j<3){
+                                        board1=this.rotate(board1);
+                                    }else if(j<7){
+                                        if(j==3){
+                                            board1=this.rotate(board1);
+                                        }
+                                        board1=this.flip(tempObject.boardLayout,flips[j]);
+                                    }else if(j==7){
+                                        board1=tempObject.boardLayout
+                                    }
+                                    if(this.isEqual(board1,this.paths[i].boardLayout)==true){
+                                        equal=1
+                                    }
+                                }
+                            }
+                            if(equal==0){
+                                this.paths.push(tempObject);
+                            }
+                        }else{
+                            this.paths.push(tempObject);
+                        }
+                    }else if(num<8){
+                        this.createPath(newNums,newNum,board,turns);
+                    }
+                }
+            }else if(num==0){
+                let board=[0,0,0,0,0,0,0,0,0];
+                board[a]=1;
+                let newNums=Array.from(nums);
+                let turns=[nums[a]];
+                newNums.splice(newNums.indexOf(nums[a]),1);
+                let newNum=num+1;
+                this.createPath(newNums,newNum,board,turns);
+            }
+        }
     }
     //moveNum starts with 0
     addToList(moveNum,moveOrder,list,index){
@@ -241,6 +326,7 @@ class Game{
         }
     }
     isEqual(list1,list2){
+        // if(this.count<10){console.log(list1);}
         if((list1[0][0]==list2[0][0])&&(list1[0][1]==list2[0][1])&&(list1[0][2]==list2[0][2])
         &&(list1[1][0]==list2[1][0])&&(list1[1][1]==list2[1][1])&&(list1[1][2]==list2[1][2])
         &&(list1[2][0]==list2[2][0])&&(list1[2][1]==list2[2][1])&&(list1[2][2]==list2[2][2])){
